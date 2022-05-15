@@ -2,11 +2,11 @@
     "name": "support-desk",
     "version": "1.0.0",
     "description": "support ticket app",
-    "main": "server.js",
+    "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "node server/server.js",
-        "server": "nodemon server/server.js"
+        "start": "node server/index.js",
+        "server": "nodemon server/index.js"
     },
     "author": "Reema Alshohof",
     "license": "MIT",
