@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { FaSignInAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../features/authentication/authSlice";
+import Spinner from "../components/Spinner";
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -41,6 +43,13 @@ const Login = () => {
     const userData = { email, password };
     dispatch(login(userData));
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <>
       <section className="heading">
