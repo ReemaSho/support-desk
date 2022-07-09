@@ -24,23 +24,20 @@ const registerUser = asyncHandler(async(req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     //create user
-    const user = await User.create({
+    const createdUser = await User.create({
         name,
         email,
         password: hashedPassword,
     });
-    if (user) {
-        const newUser = {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            token: generateToken(user._id),
+    if (createdUser) {
+        const user = {
+            _id: createdUser._id,
+            name: createdUser.name,
+            email: createdUser.email,
+            token: generateToken(createdUser._id),
         };
 
-        res.status(201).json({
-            success: true,
-            user: {...newUser },
-        });
+        res.status(201).json(user);
     } else {
         res.status(400);
         throw new Error("Invalid user data");
@@ -65,10 +62,7 @@ const loginUser = asyncHandler(async(req, res) => {
             email: existUser.email,
             token: generateToken(existUser._id),
         };
-        res.status(200).json({
-            success: true,
-            user,
-        });
+        res.status(200).json(user);
     } else {
         res.status(401);
         throw new Error("Invalid credentials");
