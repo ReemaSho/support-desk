@@ -28,7 +28,7 @@ const Login = () => {
     if (isSuccess && user) {
       navigate("/");
     }
-    dispatch(reset);
+    dispatch(reset());
   }, [isError, isSuccess, user, message, navigate, dispatch]);
 
   const onChange = (e) => {
