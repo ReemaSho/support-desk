@@ -70,18 +70,31 @@ export const getTicket = createAsyncThunk(
     }
 );
 
+// close ticket
+export const closeTicket = createAsyncThunk(
+    "tickets/close",
+    async(ticketId, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().authentication.user.token;
+            return await ticketService.closeTicket(ticketId, token);
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 export const ticketSlice = createSlice({
     name: "ticket",
     initialState,
     reducers: {
-        reset: (state) => {
-            state.tickets = [];
-            state.ticket = {};
-            state.isError = false;
-            state.isSuccess = false;
-            state.isLoading = false;
-            state.message = "";
-        },
+        reset: (state) => initialState,
     },
     extraReducers: (builder) => {
         builder
@@ -117,6 +130,20 @@ export const ticketSlice = createSlice({
                 state.ticket = action.payload;
             })
             .addCase(getTicket.rejected, (state, action) => {
+                state.isLoading = false;
+                state.message = action.payload;
+            })
+            .addCase(closeTicket.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(closeTicket.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.tickets.map((ticket) =>
+                    ticket._d === action.payload._d ? (ticket.status = "closed") : ticket
+                );
+            })
+            .addCase(closeTicket.rejected, (state, action) => {
                 state.isLoading = false;
                 state.message = action.payload;
             });

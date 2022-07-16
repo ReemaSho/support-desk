@@ -128,8 +128,11 @@ const updateTicket = asyncHandler(async(req, res) => {
         res.status(401);
         throw new Error("Not authorized");
     }
-    const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, req.body);
 
-    res.status(200).send(updatedTicket);
+    const updatedTicket = await Ticket.findByIdAndUpdate(ticketId, req.body, {
+        new: true,
+    });
+
+    return res.status(200).send(updatedTicket);
 });
 export { getTickets, getTicket, createTicket, deleteTicket, updateTicket };
