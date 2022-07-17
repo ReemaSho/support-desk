@@ -3,24 +3,33 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
 const protect = asyncHandler(async(req, res, next) => {
+    let token;
     if (
         req.headers.authorization &&
         req.headers.authorization.startsWith("Bearer")
     ) {
         try {
             // get token from header
-            const token = req.headers.authorization.split(" ")[1];
+            token = req.headers.authorization.split(" ")[1];
             // verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            console.log(decoded);
             // get user from token
             req.user = await User.findById(decoded.id).select("-password");
+
+            // check if user found
+            if (!req.user) {
+                res.status(401);
+                throw new Error("Not authorized");
+            }
             next();
         } catch (error) {
             console.log(error);
             res.status(401);
             throw new Error("Not authorized");
         }
-    } else {
+    }
+    if (!token) {
         res.status(401);
         throw new Error("Not authorized");
     }

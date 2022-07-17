@@ -73,14 +73,9 @@ const loginUser = asyncHandler(async(req, res) => {
 //@route   /api/users/me
 //@access  Private
 const getMe = asyncHandler(async(req, res) => {
-    const { _id: id, email, name } = req.user;
-    const user = {
-        id,
-        email,
-        name,
-    };
-    res.status(200).send(user);
+    res.status(200).send(req.user);
 });
+
 // jWT token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
