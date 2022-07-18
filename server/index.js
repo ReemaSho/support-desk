@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import userRoutes from "./routes/userRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
@@ -17,13 +18,22 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => {
-    res.status(200).json({ message: "Welcome to Support Desk API" });
-});
-
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/tickets", ticketRoutes);
+
+//serve client
+if (process.env.NODE_ENV === "production") {
+    //set build folder as static
+    app.use(express.static(path.join(__dirname, "../client/build")));
+    app.get("*", (req, res) =>
+        res.sendFile(__dirname, "../", "client", "build", "index.html")
+    );
+} else {
+    app.get("/", (req, res) => {
+        res.status(200).json({ message: "Welcome to Support Desk API" });
+    });
+}
 
 // middleware
 app.use(errorHandler);
