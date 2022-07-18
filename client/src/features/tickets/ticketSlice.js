@@ -140,7 +140,9 @@ export const ticketSlice = createSlice({
                 state.isLoading = false;
                 state.isSuccess = true;
                 state.tickets.map((ticket) =>
-                    ticket._d === action.payload._d ? (ticket.status = "closed") : ticket
+                    ticket._d === action.payload._d ?
+                    (ticket.status = action.payload.status) :
+                    ticket
                 );
             })
             .addCase(closeTicket.rejected, (state, action) => {
