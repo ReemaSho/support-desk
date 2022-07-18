@@ -139,9 +139,9 @@ export const ticketSlice = createSlice({
             .addCase(closeTicket.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.tickets.map((ticket) =>
-                    ticket._d === action.payload._d ? (ticket.status = "closed") : ticket
-                );
+                // state.tickets.map((ticket) =>
+                //     ticket._d === action.payload._d ? (ticket.status = "closed") : ticket
+                // );
             })
             .addCase(closeTicket.rejected, (state, action) => {
                 state.isLoading = false;
