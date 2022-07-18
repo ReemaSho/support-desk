@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
-import { getNotes, reset as notesReset } from "../features/notes/noteSlice";
+import { getNotes } from "../features/notes/noteSlice";
 import { toast } from "react-toastify";
 import FormModal from "../components/FormModal";
 import NoteItem from "../components/NoteItem";
@@ -13,7 +13,7 @@ const Ticket = () => {
   const { ticketId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { ticket, isLoading, isSuccess, isError, message } = useSelector(
+  const { ticket, isLoading, isError, message } = useSelector(
     (state) => state.ticket
   );
   const { notes, isLoading: notesIsLoading } = useSelector(

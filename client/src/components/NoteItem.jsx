@@ -13,7 +13,7 @@ const NoteItem = ({ note }) => {
         )}
       </h4>
       <p>{note.text}</p>
-      <div className="note-date">
+      <div className={note.isStaff ? "note-staff-date" : "note-date"}>
         {new Date(note.createdAt).toDateString("en-US")}
       </div>
     </div>

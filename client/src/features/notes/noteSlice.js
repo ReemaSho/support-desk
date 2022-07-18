@@ -27,6 +27,27 @@ export const getNotes = createAsyncThunk(
         }
     }
 );
+
+// add note to ticket
+export const addNote = createAsyncThunk(
+    "notes/addNote",
+    async({ ticketId, noteText }, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().authentication.user.token;
+            return await noteService.addNote(ticketId, noteText, token);
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 export const noteSlice = createSlice({
     name: "note",
     initialState,
@@ -38,16 +59,30 @@ export const noteSlice = createSlice({
             .addCase(getNotes.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getNotes.fulfilled, (state, actions) => {
+            .addCase(getNotes.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.notes = actions.payload;
+                state.notes = action.payload;
             })
 
-        .addCase(getNotes.rejected, (state, actions) => {
+        .addCase(getNotes.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(addNote.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(addNote.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.notes.push(action.payload);
+            })
+
+        .addCase(addNote.rejected, (state, action) => {
             state.isLoading = false;
             state.isError = true;
-            state.message = actions.payload;
+            state.message = action.payload;
         });
     },
 });

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import Modal from "react-modal";
+import { useDispatch, useSelector } from "react-redux";
+import { addNote } from "../features/notes/noteSlice";
 import { FaPlus } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import Spinner from "./Spinner";
+
 const customStyles = {
   content: {
     width: "600px",
@@ -17,6 +20,9 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 const FormModal = ({ ticket }) => {
+  const { isLoading } = useSelector((state) => state.notes);
+
+  const { _id: ticketId } = ticket;
   const [modalIsOpen, setIsOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
   const dispatch = useDispatch();
@@ -27,10 +33,12 @@ const FormModal = ({ ticket }) => {
   // add note submit
   const onNoteSubmit = (e) => {
     e.preventDefault();
-    console.log("submit");
     closeModal();
+    dispatch(addNote({ ticketId, noteText }));
   };
-
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <>
       {ticket.status !== "closed" && (
