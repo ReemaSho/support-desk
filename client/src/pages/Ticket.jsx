@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getTicket, closeTicket } from "../features/tickets/ticketSlice";
 import { getNotes, reset as notesReset } from "../features/notes/noteSlice";
 import { toast } from "react-toastify";
+import FormModal from "../components/FormModal";
 import NoteItem from "../components/NoteItem";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
@@ -60,6 +61,7 @@ const Ticket = () => {
           <p>{ticket.description}</p>
         </div>
       </header>
+      <FormModal ticket={ticket} />
       <h2>Notes</h2>
       {notes.map((note) => (
         <NoteItem key={note._id} note={note} />
