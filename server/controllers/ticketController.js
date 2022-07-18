@@ -14,6 +14,10 @@ const getTickets = asyncHandler(async(req, res) => {
     }
 
     const tickets = await Ticket.find({ user: userId });
+    if (!tickets) {
+        res.status(404);
+        throw new Error("No tickets found");
+    }
     res.status(200).send(tickets);
 });
 
