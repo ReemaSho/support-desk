@@ -68,4 +68,79 @@ const addNote = asyncHandler(async(req, res) => {
     res.status(200).send(note);
 });
 
-export { getNotes, addNote };
+//@desc   delete  ticket's note
+//@route   DELETE  /api/tickets/:ticketId/notes/:noteId
+//@access  Private
+const deleteNote = asyncHandler(async(req, res) => {
+    const { id: userId } = req.user;
+    const { ticketId, noteId } = req.params;
+
+    // check user
+    const user = await User.findById(userId);
+    if (!user) {
+        res.status(401);
+        throw new Error("User not found");
+    }
+    // find ticket
+    const ticket = await Ticket.findById(ticketId);
+
+    if (!ticket) {
+        res.status(404);
+        throw new Error("Ticket not found");
+    }
+
+    // check if ticket belongs to the user from JWT
+    if (ticket.user.toString() !== userId) {
+        res.status(401);
+        throw new Error("Not authorized");
+    }
+
+    const note = await Note.findById(noteId);
+    if (!note) {
+        res.status(404);
+        throw new Error("Note not found");
+    }
+
+    await note.deleteOne();
+
+    res.status(200).send({ success: true });
+});
+
+//@desc   update ticket's note
+//@route   PUT /api/tickets/:ticketId/notes/:noteId
+//@access  Private
+const updateNote = asyncHandler(async(req, res) => {
+    const { id: userId } = req.user;
+    const { ticketId, noteId } = req.params;
+
+    // check user
+    const user = await User.findById(userId);
+    if (!user) {
+        res.status(401);
+        throw new Error("User not found");
+    }
+    // find ticket
+    const ticket = await Ticket.findById(ticketId);
+
+    if (!ticket) {
+        res.status(404);
+        throw new Error("Ticket not found");
+    }
+
+    //check if ticket belongs to the user from JWT
+    if (ticket.user.toString() !== userId) {
+        res.status(401);
+        throw new Error("Not authorized");
+    }
+
+    const updatedNote = await Note.findByIdAndUpdate(noteId, req.body, {
+        new: true,
+    });
+    if (!updatedNote) {
+        res.status(404);
+        throw new Error("Note not found");
+    }
+    return res.status(200).send(updatedNote);
+});
+
+export { getNotes, addNote, deleteNote, updateNote };
