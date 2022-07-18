@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import userRoutes from "./routes/userRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
@@ -7,6 +8,9 @@ import connectDB from "./config/db.js";
 import colors from "colors";
 import dotenv from "dotenv";
 dotenv.config();
+const __filename = fileURLToPath(
+    import.meta.url);
+const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 8000;
 
 //connect to database
